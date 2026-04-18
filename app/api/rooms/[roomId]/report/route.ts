@@ -27,8 +27,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ roomId:
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
 
-    const messagesSnapshot = await adminDb.collection('messages')
-      .where('roomId', '==', roomId)
+    const messagesSnapshot = await adminDb.collection('ideaRooms').doc(roomId).collection('messages')
       .orderBy('timestamp', 'asc')
       .get();
       

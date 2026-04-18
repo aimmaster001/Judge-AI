@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Loader2, FileText, CheckCircle2, AlertTriangle, Presentation } from 'lucide-react';
 
 export default function ReportEngine({ roomId }: { roomId: string }) {
@@ -9,7 +9,7 @@ export default function ReportEngine({ roomId }: { roomId: string }) {
   const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const fetchReport = async () => {
+  const fetchReport = useCallback(async () => {
     try {
       const res = await fetch(`/api/rooms/${roomId}/report`);
       const data = await res.json();
@@ -21,11 +21,11 @@ export default function ReportEngine({ roomId }: { roomId: string }) {
     } finally {
       setInitialLoading(false);
     }
-  };
+  }, [roomId]);
 
   useEffect(() => {
-    fetchReport();
-  }, [roomId]);
+    setTimeout(() => fetchReport(), 0);
+  }, [fetchReport]);
 
   const handleGenerate = async () => {
     setGenerating(true);

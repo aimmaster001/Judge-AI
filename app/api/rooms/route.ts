@@ -29,7 +29,7 @@ export async function POST(req: Request) {
     const introMsg = `Welcome to your Idea Room for "${ideaName}"! 🚀\nI'm your AI Startup Mentor. I will evaluate your idea from the perspectives of an Investor, a Technical Expert, a Legal Advisor, and a Devil’s Advocate.\n\nSend START_${roomId} to me on WhatsApp to sync this room!`;
     const messageId = uuidv4();
     
-    await adminDb.collection('messages').doc(messageId).set({
+    await adminDb.collection('ideaRooms').doc(roomId).collection('messages').doc(messageId).set({
       messageId,
       roomId,
       userId: session.userId,

@@ -99,7 +99,7 @@ export async function POST(req: Request) {
       const msg = `Synced! You've joined the Idea Room: "${room.ideaName}".\n\nI'm ready when you are. Tell me more about your idea, your target customer, or your monetization strategy.`;
       
       const messageId = uuidv4();
-      await adminDb.collection('messages').doc(messageId).set({
+      await adminDb.collection('ideaRooms').doc(roomId).collection('messages').doc(messageId).set({
           messageId,
           roomId,
           userId: room.userId,
@@ -130,7 +130,7 @@ export async function POST(req: Request) {
     
     // Save user message to database
     const userMessageId = uuidv4();
-    await adminDb.collection('messages').doc(userMessageId).set({
+    await adminDb.collection('ideaRooms').doc(roomId).collection('messages').doc(userMessageId).set({
         messageId: userMessageId,
         roomId,
         userId: activeUserId || 'unknown',
@@ -146,9 +146,8 @@ export async function POST(req: Request) {
       aiResponseText = `Your message received: ${body}`;
     } else {
       try {
-          // Fetch last 10 messages for context
-          const messagesSnapshot = await adminDb.collection('messages')
-              .where('roomId', '==', roomId)
+          // Fetch last 10 messages for context (No composite index required for single-collection sorting)
+          const messagesSnapshot = await adminDb.collection('ideaRooms').doc(roomId).collection('messages')
               .orderBy('timestamp', 'desc')
               .limit(10)
               .get();
@@ -179,7 +178,7 @@ export async function POST(req: Request) {
 
     // Save AI response to database
     const aiMessageId = uuidv4();
-    await adminDb.collection('messages').doc(aiMessageId).set({
+    await adminDb.collection('ideaRooms').doc(roomId).collection('messages').doc(aiMessageId).set({
         messageId: aiMessageId,
         roomId,
         userId: activeUserId || 'unknown',
@@ -206,7 +205,7 @@ export async function POST(req: Request) {
   <Message>An internal server error occurred. Please try again later.</Message>
 </Response>`;
     return new NextResponse(errorTwiml, { 
-      status: 500, 
+      status: 200, 
       headers: { 'Content-Type': 'text/xml' } 
     });
   }

@@ -22,8 +22,7 @@ export default async function DashboardPage() {
   const roomsData = roomsSnapshot.docs.map(doc => doc.data() as any);
   
   const rooms = await Promise.all(roomsData.map(async (room) => {
-    const messagesCountSnapshot = await adminDb.collection('messages')
-        .where('roomId', '==', room.roomId)
+    const messagesCountSnapshot = await adminDb.collection('ideaRooms').doc(room.roomId).collection('messages')
         .count()
         .get();
     return { ...room, messageCount: messagesCountSnapshot.data().count };

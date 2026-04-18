@@ -66,13 +66,17 @@ service cloud.firestore {
       // No updates for MVP based on requirements
     }
 
-    match /messages/{messageId} {
+    match /ideaRooms/{roomId}/messages/{messageId} {
       // NOTE: User only fetches messages of their own rooms
       allow get: if isSignedIn() && isValidId(messageId) && resource.data.userId == request.auth.uid;
       allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
       allow create: if isSignedIn() && isValidId(messageId) && isValidMessage(request.resource.data) &&
-                    exists(/databases/$(database)/documents/ideaRooms/$(request.resource.data.roomId)) &&
-                    get(/databases/$(database)/documents/ideaRooms/$(request.resource.data.roomId)).data.userId == request.auth.uid;
+                    get(/databases/$(database)/documents/ideaRooms/$(roomId)).data.userId == request.auth.uid;
+    }
+
+    match /messages/{messageId} {
+      // Legacy path, deny all
+      allow read, write: if false;
     }
 
     match /reports/{reportId} {

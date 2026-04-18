@@ -44,7 +44,7 @@ export default function Home() {
            </div>
            <div className="bg-[#0e0e14] border border-[rgba(255,255,255,0.08)] p-8 rounded-2xl">
              <ShieldAlert className="w-8 h-8 text-[#f59e0b] mb-6" />
-             <h3 className="text-[18px] font-semibold mb-3">Devil's Advocate</h3>
+             <h3 className="text-[18px] font-semibold mb-3">Devil&apos;s Advocate</h3>
              <p className="text-[14px] text-[#94a3b8] leading-relaxed">The AI actively tries to find holes in your strategy, highlighting risks you might have missed.</p>
            </div>
            <div className="bg-[#0e0e14] border border-[rgba(255,255,255,0.08)] p-8 rounded-2xl">

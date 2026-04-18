@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import Markdown from 'react-markdown';
 import { RefreshCw, Smartphone } from 'lucide-react';
 
@@ -11,10 +11,10 @@ export default function RoomChat({ roomId }: { roomId: string }) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => setMounted(true), 0);
   }, []);
 
-  const fetchMessages = async () => {
+  const fetchMessages = useCallback(async () => {
     try {
       const res = await fetch(`/api/rooms/${roomId}/messages`);
       const data = await res.json();
@@ -26,13 +26,13 @@ export default function RoomChat({ roomId }: { roomId: string }) {
     } finally {
       if (loading) setLoading(false);
     }
-  };
+  }, [roomId, loading]);
 
   useEffect(() => {
-    fetchMessages();
+    setTimeout(() => fetchMessages(), 0);
     const interval = setInterval(fetchMessages, 3000);
     return () => clearInterval(interval);
-  }, [roomId]);
+  }, [fetchMessages]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -52,13 +52,13 @@ export default function RoomChat({ roomId }: { roomId: string }) {
                         <p>To start validating this idea with the AI Mentor, connect your app to the Twilio WhatsApp Sandbox:</p>
                         <ol className="list-decimal pl-5 space-y-4">
                             <li>Log in to your <a href="https://console.twilio.com" target="_blank" className="text-[#6366f1] hover:underline cursor-pointer">Twilio Console</a>, navigate to <strong>Messaging &gt; Try it out &gt; Send a WhatsApp message</strong>.</li>
-                            <li>Join the Sandbox using your mobile phone by sending the join code to Twilio's Sandbox number.</li>
-                            <li>In the Sandbox Settings page, set the <strong>"When a message comes in"</strong> Webhook URL to:</li>
+                            <li>Join the Sandbox using your mobile phone by sending the join code to Twilio&apos;s Sandbox number.</li>
+                            <li>In the Sandbox Settings page, set the <strong>&quot;When a message comes in&quot;</strong> Webhook URL to:</li>
                             <code className="block bg-[#050508] p-4 rounded-lg border border-[rgba(255,255,255,0.1)] text-[#6366f1] font-mono shadow-inner shadow-black/50 overflow-x-auto whitespace-nowrap">
                               {mounted ? window.location.origin : 'https://your-studio-app.com'}/api/whatsapp
                             </code>
-                            <li>Update this app's Environment Variables (under Settings UI) with your Twilio credentials:<br/> <code className="bg-[#050508] px-2 py-1 rounded text-[12px] border border-[rgba(255,255,255,0.1)]">TWILIO_ACCOUNT_SID</code>, <code className="bg-[#050508] px-2 py-1 rounded text-[12px] border border-[rgba(255,255,255,0.1)]">TWILIO_AUTH_TOKEN</code>, <code className="bg-[#050508] px-2 py-1 rounded text-[12px] border border-[rgba(255,255,255,0.1)]">TWILIO_WHATSAPP_NUMBER</code></li>
-                            <li>Click the <strong className="text-[#22c55e]">"Open in WhatsApp"</strong> button above and send the pre-filled <code className="bg-[#050508] px-2 py-1 rounded text-[12px] border border-[rgba(255,255,255,0.1)] text-white">START_...</code> sequence!</li>
+                            <li>Update this app&apos;s Environment Variables (under Settings UI) with your Twilio credentials:<br/> <code className="bg-[#050508] px-2 py-1 rounded text-[12px] border border-[rgba(255,255,255,0.1)]">TWILIO_ACCOUNT_SID</code>, <code className="bg-[#050508] px-2 py-1 rounded text-[12px] border border-[rgba(255,255,255,0.1)]">TWILIO_AUTH_TOKEN</code>, <code className="bg-[#050508] px-2 py-1 rounded text-[12px] border border-[rgba(255,255,255,0.1)]">TWILIO_WHATSAPP_NUMBER</code></li>
+                            <li>Click the <strong className="text-[#22c55e]">&quot;Open in WhatsApp&quot;</strong> button above and send the pre-filled <code className="bg-[#050508] px-2 py-1 rounded text-[12px] border border-[rgba(255,255,255,0.1)] text-white">START_...</code> sequence!</li>
                         </ol>
                     </div>
                 </div>
